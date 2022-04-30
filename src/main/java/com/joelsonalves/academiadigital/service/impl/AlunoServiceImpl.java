@@ -30,17 +30,26 @@ public class AlunoServiceImpl implements IAlunoService {
 
     @Override
     public Aluno create(AlunoForm form) {
-        Aluno aluno = new Aluno();
-        aluno.setNome(form.getNome());
-        aluno.setCpf(form.getCpf());
-        aluno.setBairro(form.getBairro());
-        aluno.setDataDeNascimento(form.getDataDeNascimento());
-        return alunoRepository.save(aluno);
+
+        Aluno aluno = null;
+
+        if (alunoRepository.findByCpf(form.getCpf()).size() == 0) {
+
+            aluno = new Aluno();
+            aluno.setNome(form.getNome());
+            aluno.setCpf(form.getCpf());
+            aluno.setBairro(form.getBairro());
+            aluno.setDataDeNascimento(form.getDataDeNascimento());
+            aluno = alunoRepository.save(aluno);
+
+        }
+
+        return aluno;
     }
 
     @Override
     public Aluno get(Long id) {
-        Aluno aluno = new Aluno();
+        Aluno aluno = null;
         if (alunoRepository.existsById(id)) {
             aluno = alunoRepository.findById(id).get();
         }
@@ -75,7 +84,7 @@ public class AlunoServiceImpl implements IAlunoService {
 
     @Override
     public Aluno update(Long id, AlunoUpdateForm formUpdate) {
-        Aluno aluno = new Aluno();
+        Aluno aluno = null;
         if (alunoRepository.existsById(id)) {
             aluno = alunoRepository.findById(id).get();
             aluno.setNome(formUpdate.getNome());
@@ -111,12 +120,14 @@ public class AlunoServiceImpl implements IAlunoService {
 
     @Override
     public List<AvaliacaoFisica> getAvaliacaoFisicaByAlunoId(Long id) {
+        List<AvaliacaoFisica> avaliacoesFisicas = null;
 
-        Aluno aluno = new Aluno();
         if (alunoRepository.existsById(id)) {
-            aluno = alunoRepository.findById(id).get();
+            Aluno aluno = alunoRepository.findById(id).get();
+            avaliacoesFisicas = aluno.getAvaliacoes();
         }
-        return aluno.getAvaliacoes();
+
+        return avaliacoesFisicas;
     }
 
 }

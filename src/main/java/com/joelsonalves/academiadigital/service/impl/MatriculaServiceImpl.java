@@ -7,9 +7,7 @@ import com.joelsonalves.academiadigital.repository.AlunoRepository;
 import com.joelsonalves.academiadigital.repository.MatriculaRepository;
 import com.joelsonalves.academiadigital.service.IMatriculaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +23,19 @@ public class MatriculaServiceImpl implements IMatriculaService {
 
     @Override
     public Matricula create(MatriculaForm form) {
-        Matricula matricula = new Matricula();
+        Matricula matricula = null;
 
         if (alunoRepository.existsById(form.getAlunoId())) {
 
             Aluno aluno = alunoRepository.findById(form.getAlunoId()).get();
-            matricula.setAluno(aluno);
-            matricula = matriculaRepository.save(matricula);
+
+            if (matriculaRepository.findByAluno(aluno).size() == 0) {
+
+                matricula = new Matricula();
+                matricula.setAluno(aluno);
+                matricula = matriculaRepository.save(matricula);
+
+            }
 
         }
         return matricula;
@@ -39,7 +43,7 @@ public class MatriculaServiceImpl implements IMatriculaService {
 
     @Override
     public Matricula get(Long id) {
-        Matricula matricula = new Matricula();
+        Matricula matricula = null;
         if (matriculaRepository.existsById(id)) {
             matricula = matriculaRepository.findById(id).get();
         }

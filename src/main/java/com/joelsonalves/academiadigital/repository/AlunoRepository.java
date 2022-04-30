@@ -20,4 +20,6 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     List<Aluno> findByBairro(String bairro);
 
     List<Aluno> findByBairroAndDataDeNascimento(String bairro, LocalDate dataDeNascimento);
+
+    List<Aluno> findByCpf(String cpf);
 }
